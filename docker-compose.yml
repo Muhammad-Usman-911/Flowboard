@@ -1,0 +1,70 @@
+# `docker compose up --build` starts the whole stack:
+#   db (Postgres 16) + redis + api (FastAPI, runs migrations and the demo seed) + web (nginx + React)
+# Host ports can be changed in .env (see .env.example); defaults avoid common ports.
+name: flowboard
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-flowboard}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-flowboard}
+      POSTGRES_DB: ${POSTGRES_DB:-flowboard}
+    ports:
+      - "${DB_PORT:-55433}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-flowboard} -d ${POSTGRES_DB:-flowboard}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "${REDIS_PORT:-56379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-flowboard}:${POSTGRES_PASSWORD:-flowboard}@db:5432/${POSTGRES_DB:-flowboard}
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-production-0123456789abcdef}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5183}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      LOG_JSON: ${LOG_JSON:-true}
+      SEED_DEMO_DATA: ${SEED_DEMO_DATA:-true}
+      UPLOAD_DIR: /app/uploads
+    ports:
+      - "${API_PORT:-8103}:8000"
+    volumes:
+      - uploads:/app/uploads
+    healthcheck:
+      test: ["CMD", "python", "-m", "scripts.healthcheck"]
+      interval: 5s
+      timeout: 3s
+      start_period: 20s
+      retries: 10
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  web:
+    build: ./frontend
+    ports:
+      - "${WEB_PORT:-5183}:80"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  uploads:

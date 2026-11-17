@@ -1,0 +1,40 @@
+# Tool configuration for the backend (dependencies live in requirements*.txt).
+[project]
+name = "flowboard-api"
+version = "1.0.0"
+requires-python = ">=3.12"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["alembic/versions"]
+
+[tool.ruff.lint]
+# E/F: pycodestyle + pyflakes, I: import order, B: bugbear, UP: modern syntax,
+# SIM: simplifications, ASYNC: async pitfalls, N: naming
+select = ["E", "F", "I", "B", "UP", "SIM", "ASYNC", "N"]
+ignore = ["B008"]  # FastAPI's Depends(...) in defaults is intended
+
+[tool.ruff.lint.isort]
+# The local alembic/ folder would otherwise make "alembic" look like our own package.
+known-third-party = ["alembic"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+# One event loop for the whole test session, shared by the app, the DB engine and tests.
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"
+addopts = "-ra"
+filterwarnings = ["ignore::DeprecationWarning:httpx_ws.*"]
+
+[tool.coverage.run]
+source = ["app"]
+# SQLAlchemy runs async code inside greenlets; tell coverage so it tracks those lines.
+concurrency = ["greenlet", "thread"]
+omit = ["app/__init__.py"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+exclude_also = ["if TYPE_CHECKING:", "raise NotImplementedError"]
