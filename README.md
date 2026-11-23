@@ -13,6 +13,16 @@ standards, and it is also written to be read: the code is commented for learners
 
 ![Kanban board (light mode)](docs/screenshots/board-light.png)
 
+### ▶ How to use Flowboard (90-second video)
+
+[![Watch the Flowboard walkthrough](frontend/public/media/flowboard-tour.jpg)](frontend/public/media/flowboard-tour.mp4)
+
+Click the image to watch the walkthrough: log in, create a workspace, invite your team, work on
+tasks, drag cards live and track progress. In the app it is on the public **`/tour`** page
+(linked under the login form), with clickable chapters.
+
+**Want it online?** [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) shows two ways to publish Flowboard **for free**.
+
 ---
 
 ## Contents
@@ -22,6 +32,7 @@ standards, and it is also written to be read: the code is commented for learners
 - [Tech stack](#tech-stack)
 - [Architecture](#architecture)
 - [Quick start (Docker)](#quick-start-docker)
+- [Publish it for free](docs/DEPLOYMENT.md)
 - [Run locally without Docker](#run-locally-without-docker)
 - [Demo accounts](#demo-accounts)
 - [Tests](#tests)
@@ -339,6 +350,7 @@ flowboard/
 │   ├── LEARNING_GUIDE.md        # start here to learn from the code
 │   ├── ARCHITECTURE.md          # ER diagram, request/event sequences, design decisions
 │   ├── PROJECT_PROMPT.md        # the original build specification
+│   ├── DEPLOYMENT.md            # publish it for free (managed services or one free VM)
 │   └── screenshots/
 ├── docker-compose.yml           # db + redis + api + web
 ├── .github/workflows/ci.yml     # lint, tests (with Postgres + Redis), build

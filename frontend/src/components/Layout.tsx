@@ -121,6 +121,9 @@ export function Layout() {
             <NavLink to="/profile" className={navClass}>
               Profile
             </NavLink>
+            <NavLink to="/tour" className={navClass}>
+              Tour
+            </NavLink>
           </nav>
           <div className="ml-auto flex items-center gap-1">
             <NotificationBell />

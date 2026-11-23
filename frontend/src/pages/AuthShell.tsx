@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { Link } from 'react-router'
 import { Logo } from '../components/Layout'
 
 /** Shared frame for the login and register pages. */
@@ -14,6 +15,15 @@ export function AuthShell({ title, subtitle, children }: { title: string; subtit
           <p className="mt-1 mb-6 text-sm text-slate-500 dark:text-slate-400">{subtitle}</p>
           {children}
         </div>
+        <Link
+          to="/tour"
+          className="mt-4 flex items-center justify-center gap-2 text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400"
+        >
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true">
+            <path d="M8 5.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 8 5.5Z" />
+          </svg>
+          New here? Watch the 90-second tour
+        </Link>
       </div>
     </div>
   )
